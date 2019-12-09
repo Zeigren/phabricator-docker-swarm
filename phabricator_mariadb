@@ -1,0 +1,4 @@
+[mysqld]
+sql_mode=STRICT_ALL_TABLES
+local_infile=0
+max_allowed_packet=33554432

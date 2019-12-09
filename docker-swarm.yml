@@ -1,0 +1,122 @@
+version: '3.7'
+
+services:
+  nginx:
+    image: nginx:alpine
+    volumes:
+      - phabricator:/var/www/html
+    depends_on:
+      - phabricator
+    networks:
+      - phabricator
+    ports:
+      - "80:80"
+      - "443:443"
+    configs:
+      - source: phabricator_vhost
+        target: /etc/nginx/conf.d/default.conf
+    secrets:
+      - source: YOURDOMAIN.com.crt
+        target: /etc/nginx/certs/YOURDOMAIN.com.crt
+      - source: YOURDOMAIN.com.key
+        target: /etc/nginx/certs/YOURDOMAIN.com.key
+      - source: dhparam.pem
+        target: /etc/nginx/dhparam/dhparam.pem
+
+  mariadb:
+    image: mariadb:10
+    environment:
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/phabricatorsql_root_password
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+# work around for https://github.com/docker-library/mariadb/issues/262
+      - MYSQL_INITDB_SKIP_TZINFO=1
+    volumes:
+      - phabricator_sql:/var/lib/mysql
+    secrets:
+      - phabricatorsql_root_password
+    configs:
+      - source: phabricator_mariadb
+        target: /etc/mysql/conf.d/phabricator.cnf
+    networks:
+      - phabricator_db
+
+  phabricator:
+    image: zeigren/phabricator:latest
+    depends_on:
+      - mariadb
+    volumes:
+      - phabricator:/var/www/html
+      - phabricator_ssh_config:/etc/ssh
+      - phabricator_repo:/var/repo
+    environment:
+# set to true on first start up or to update Phabricator
+      - UPGRADE_ON_RESTART=false
+      - PHAB_PHD_USER=phduser
+      - PHAB_DIFFUSION_SSH_PORT=2530
+      - PHAB_DIFFUSION_SSH_USER=git
+      - PHAB_PHABRICATOR_BASE_URI=https://YOURDOMAIN.com/
+      - PHAB_MYSQL_PASS=DOCKER-SECRET->phabricatorsql_root_password
+      - PHAB_MYSQL_USER=root
+      - PHAB_MYSQL_HOST=mariadb
+      - PHAB_STORAGE_MYSQL_ENGINE_MAX_SIZE=8388608
+      - PHAB_CLUSTER_MAILERS=true
+#      - date_timezone=America/Los_Angeles
+#      - mysqli_allow_local_infile=0
+#      - opcache_memory_consumption=128
+#      - opcache_interned_strings_buffer=8
+#      - opcache_max_accelerated_files=4000
+#      - opcache_revalidate_freq=60
+#      - opcache_fast_shutdown=1
+#      - opcache_enable_cli=1
+#      - opcache_validate_timestamps=0
+#      - post_max_size=128M
+#      - upload_max_filesize=128M
+#      - memory_limit=1028M
+#      - expose_php=off
+#      - cgifix_pathinfo=0
+    networks:
+      - phabricator
+      - phabricator_db
+    ports:
+      - "2530:2530"
+    configs:
+      - source: mailers.json
+        target: /usr/src/docker-phab/mailers.json
+      - source: git-sudo
+        target: /usr/src/docker-phab/git-sudo
+      - source: sshd_config.phabricator
+        target: /usr/src/docker-phab/sshd_config.phabricator
+    secrets:
+      - phabricatorsql_root_password
+
+volumes:
+  phabricator_sql:
+  phabricator:
+  phabricator_ssh_config:
+  phabricator_repo:
+
+networks:
+  phabricator:
+  phabricator_db:
+
+secrets:
+  phabricatorsql_root_password:
+    external: true
+  YOURDOMAIN.com.crt:
+    external: true
+  YOURDOMAIN.com.key:
+    external: true
+  dhparam.pem:
+    external: true
+
+configs:
+  phabricator_vhost:
+    external: true
+  phabricator_mariadb:
+    external: true
+  mailers.json:
+    external: true
+  git-sudo:
+    external: true
+  sshd_config.phabricator:
+    external: true

@@ -1,0 +1,2 @@
+PHAB_DIFFUSION_SSH_USER ALL=(PHAB_PHD_USER) SETENV: NOPASSWD: /bin/ls, /usr/bin/git, /usr/bin/git-upload-pack, /usr/bin/git-receive-pack, /usr/bin/svnserve
+www-data ALL=(PHAB_PHD_USER) SETENV: NOPASSWD: /bin/ls, /usr/bin/git-http-backend, /usr/bin/git
