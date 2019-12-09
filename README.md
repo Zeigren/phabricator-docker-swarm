@@ -10,8 +10,8 @@
 - PHP 7.2-fpm-alpine
 
 ### [Docker Hub](https://hub.docker.com/r/zeigren/phabricator)
-### [Main Repository](https://projects.zeigren.com/diffusion/4/)
-### [Project](https://projects.zeigren.com/project/view/36/)
+### [Main Repository](https://projects.zeigren.com/diffusion/40/)
+### [Project](https://projects.zeigren.com/project/view/45/)
 
 ## Configuration
 
