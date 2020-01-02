@@ -6,8 +6,8 @@
 
 - Phabricator Stable Branch
 - Nginx Alpine
-- Mariadb 10.3/latest
-- PHP 7.2-fpm-alpine
+- Mariadb 10
+- PHP 7.4-fpm-alpine
 
 ### [Docker Hub](https://hub.docker.com/r/zeigren/phabricator)
 ### [Main Repository](https://projects.zeigren.com/diffusion/40/)
