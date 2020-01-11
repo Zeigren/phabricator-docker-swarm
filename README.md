@@ -1,16 +1,28 @@
 [![Docker Hub](https://img.shields.io/docker/cloud/build/zeigren/phabricator)](https://hub.docker.com/repository/docker/zeigren/phabricator)
+[![](https://images.microbadger.com/badges/image/zeigren/phabricator.svg)](https://microbadger.com/images/zeigren/bookstack)
+[![](https://images.microbadger.com/badges/version/zeigren/phabricator.svg)](https://microbadger.com/images/zeigren/bookstack)
+[![](https://images.microbadger.com/badges/commit/zeigren/phabricator.svg)](https://microbadger.com/images/zeigren/bookstack)
 
-## Docker Image For [Phabricator](https://www.phacility.com/phabricator/)
+## Docker Stack For [Phabricator](https://www.phacility.com/phabricator/)
 
-### Stack
+## Tags
 
-- Phabricator Stable Branch
+- latest
+
+## Stack
+
+- PHP 7.4-fpm-alpine - Phabricator Stable Branch
 - Nginx Alpine
-- Mariadb 10
-- PHP 7.4-fpm-alpine
+- MariaDB 10.4/latest
+
+## Links
 
 ### [Docker Hub](https://hub.docker.com/r/zeigren/phabricator)
+
+### [GitHub](https://github.com/Zeigren/phabricator-docker-swarm)
+
 ### [Main Repository](https://projects.zeigren.com/diffusion/40/)
+
 ### [Project](https://projects.zeigren.com/project/view/45/)
 
 ## Configuration
@@ -23,20 +35,20 @@ I personally use this with [Traefik](https://traefik.io/) as a reverse proxy, bu
 
 You'll need to create these [Docker Secrets](https://docs.docker.com/engine/swarm/secrets/):
 
-- YOURDOMAIN.com.crt = The SSL certificate for your domain (you'll need to create/copy this)
-- YOURDOMAIN.com.key = The SSL key for your domain (you'll need to create/copy this)
+- yourdomain.com.crt = The SSL certificate for your domain (you'll need to create/copy this)
+- yourdomain.com.key = The SSL key for your domain (you'll need to create/copy this)
 - dhparam.pem = Diffie-Hellman parameter (you'll need to create/copy this)
 - phabricatorsql_root_password = Root password for your SQL database
 
 You'll also need to create these [Docker Configs](https://docs.docker.com/engine/swarm/configs/):
 
-- phabricator_vhost = The nginx vhost file for BookStack (template included, simply replace all instances of 'YOURDOMAIN')
+- phabricator_vhost = The nginx vhost file for BookStack (template included, simply replace all instances of `yourdomain`)
 - phabricator_mariadb = Example provided no changes necessary
 - mailers.json = Configure your [email provider](https://secure.phabricator.com/book/phabricator/article/configuring_outbound_email/), template provided
 - git-sudo = Example provided no changes necessary
 - sshd_config.phabricator = Example provided no changes necessary
 
-Make whatever changes you need to docker-stack.yml (replace all instances of 'YOURDOMAIN').
+Make whatever changes you need to docker-stack.yml (replace all instances of `yourdomain`).
 
 Run with `docker stack deploy --compose-file docker-stack.yml phabricator`
 
@@ -46,4 +58,4 @@ On first start you'll need to add an authentication provider, otherwise you won'
 
 - **/var/www/html**: phabricator files and local config
 - **/etc/ssh**: holds sshd-config for diffusion and key files (if keys are not on a volume, the fingerprint of the server will be regenerated on each start)
-- **/var/repo**: storage for the git repositories (/var/repo itself must have the permission to be writeable for the docker!)
+- **/var/repo**: storage for the git repositories

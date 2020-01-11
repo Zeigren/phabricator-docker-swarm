@@ -125,10 +125,12 @@ then
 fi
 
 # storage upgrade
-if [ "${UPGRADE_ON_RESTART}" = "true" ]; then
-  # wait until database is available
-  # replace with actual database check
-   sleep 30
+if [ "${UPGRADE_ON_RESTART}" = "true" ]
+then
+    echo "wait-for-db: waiting for ${PHAB_MYSQL_HOST}:3306"
+    /usr/local/bin/wait-for.sh ${PHAB_MYSQL_HOST}:3306 -- echo 'success'
+    echo "wait a few seconds"
+    sleep 10s
    $ROOT/phabricator/bin/storage upgrade --force
 fi
 

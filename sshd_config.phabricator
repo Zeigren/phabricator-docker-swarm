@@ -27,4 +27,3 @@ ChallengeResponseAuthentication no
 AuthorizedKeysFile none
 
 PidFile /var/run/sshd-phabricator.pid
-
