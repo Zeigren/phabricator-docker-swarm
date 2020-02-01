@@ -3,18 +3,18 @@ FROM php:7.4-fpm-alpine
 ARG BRANCH
 ARG COMMIT
 ARG DATE
+ARG URL
 ARG VERSION
 
-LABEL org.label-schema.build-date=$DATE \
-		org.label-schema.name="phabricator" \
-		org.label-schema.vendor="zeigren" \
-		org.label-schema.url="https://hub.docker.com/r/zeigren/phabricator" \
-		org.label-schema.vcs-url="https://github.com/Zeigren/phabricator-docker-swarm" \
-		org.label-schema.vcs-branch=$BRANCH \
-		org.label-schema.vcs-ref=$COMMIT \
-		org.label-schema.version=$VERSION \
-		org.label-schema.license="MIT" \
-		org.label-schema.schema-version="1.0"
+LABEL org.label-schema.schema-version="1.0" \
+    org.label-schema.build-date=$DATE \
+    org.label-schema.vendor="Zeigren" \
+    org.label-schema.name="zeigren/phabricator" \
+    org.label-schema.url="https://hub.docker.com/r/zeigren/phabricator" \
+    org.label-schema.version=$VERSION \
+    org.label-schema.vcs-url=$URL \
+    org.label-schema.vcs-branch=$BRANCH \
+    org.label-schema.vcs-ref=$COMMIT
           
 ENV PHAB_PHD_USER=${PHAB_PHD_USER:-phduser}
 ENV PHAB_DIFFUSION_SSH_PORT=${PHAB_DIFFUSION_SSH_PORT:-2530}

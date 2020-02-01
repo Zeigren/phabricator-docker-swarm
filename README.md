@@ -7,7 +7,7 @@
 
 ## Tags
 
-- latest
+Tag labels are based on the container image version.
 
 ## Stack
 
