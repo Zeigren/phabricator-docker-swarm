@@ -1,7 +1,7 @@
 [![Docker Hub](https://img.shields.io/docker/cloud/build/zeigren/phabricator)](https://hub.docker.com/repository/docker/zeigren/phabricator)
-[![](https://images.microbadger.com/badges/image/zeigren/phabricator.svg)](https://microbadger.com/images/zeigren/bookstack)
-[![](https://images.microbadger.com/badges/version/zeigren/phabricator.svg)](https://microbadger.com/images/zeigren/bookstack)
-[![](https://images.microbadger.com/badges/commit/zeigren/phabricator.svg)](https://microbadger.com/images/zeigren/bookstack)
+[![](https://images.microbadger.com/badges/image/zeigren/phabricator.svg)](https://microbadger.com/images/zeigren/phabricator)
+[![](https://images.microbadger.com/badges/version/zeigren/phabricator.svg)](https://microbadger.com/images/zeigren/phabricator)
+[![](https://images.microbadger.com/badges/commit/zeigren/phabricator.svg)](https://microbadger.com/images/zeigren/phabricator)
 
 ## Docker Stack For [Phabricator](https://www.phacility.com/phabricator/)
 
