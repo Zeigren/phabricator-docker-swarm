@@ -48,7 +48,7 @@ You'll also need to create these [Docker Configs](https://docs.docker.com/engine
 - git-sudo = Example provided no changes necessary
 - sshd_config.phabricator = Example provided no changes necessary
 
-Make whatever changes you need to docker-stack.yml (replace all instances of `yourdomain`).
+Make whatever changes you need to docker-stack.yml (replace all instances of `yourdomain`). See `docker-php-entrypoint.sh` for all Phabricator configuration options.
 
 Run with `docker stack deploy --compose-file docker-stack.yml phabricator`
 

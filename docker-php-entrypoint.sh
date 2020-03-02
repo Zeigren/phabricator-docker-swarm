@@ -13,37 +13,37 @@ REPO_USER=$(stat -c '%U' /var/repo)
 if [ ! -e "/usr/local/etc/php/conf.d/date.ini" ]; then
   cat > "/usr/local/etc/php/conf.d/date.ini" <<EOF
 [Date]
-date.timezone = ${date_timezone:-America/Los_Angeles}
+date.timezone = ${DATE_TIMEZONE:-America/Los_Angeles}
 EOF
 fi
 
 if [ ! -e "/usr/local/etc/php/conf.d/mysql.ini" ]; then
   cat > "/usr/local/etc/php/conf.d/mysql.ini" <<EOF
 [mysqli]
-mysqli.allow_local_infile = ${mysqli_allow_local_infile:-0}
+mysqli.allow_local_infile = ${MYSQLI_ALLOW_LOCAL_INFILE:-0}
 EOF
 fi
 
 if [ ! -e "/usr/local/etc/php/conf.d/opcache.ini" ]; then
   cat > "/usr/local/etc/php/conf.d/opcache.ini" <<EOF
-opcache.memory_consumption=${opcache_memory_consumption:-128}
-opcache.interned_strings_buffer=${opcache_interned_strings_buffer:-8}
-opcache.max_accelerated_files=${opcache_max_accelerated_files:-4000}
-opcache.revalidate_freq=${opcache_revalidate_freq:-60}
-opcache.fast_shutdown=${opcache_fast_shutdown:-1}
-opcache.enable_cli=${opcache_enable_cli:-1}
-opcache.validate_timestamps=${opcache_validate_timestamps:-0}
+opcache.memory_consumption=${OPCACHE_MEMORY_CONSUMPTION:-128}
+opcache.interned_strings_buffer=${OPCACHE_INTERNED_STRINGS_BUFFER:-8}
+opcache.max_accelerated_files=${OPCACHE_MAX_ACCELERATED_FILES:-4000}
+opcache.revalidate_freq=${OPCACHE_REVALIDATE_FREQ:-60}
+opcache.fast_shutdown=${OPCACHE_FAST_SHUTDOWN:-1}
+opcache.enable_cli=${OPCACHE_ENABLE_CLI:-1}
+opcache.validate_timestamps=${OPCACHE_VALIDATE_TIMESTAMPS:-0}
 EOF
 fi
 
 if [ ! -e "/usr/local/etc/php/conf.d/php-phab.ini" ]; then
   cat > "/usr/local/etc/php/conf.d/php-phab.ini" <<EOF
 [PHP]
-post_max_size = ${post_max_size:-128M}
-upload_max_filesize = ${upload_max_filesize:-128M}
-memory_limit = ${memory_limit:-1028M}
-expose_php = ${expose_php:-off}
-cgi.fix_pathinfo = ${cgifix_pathinfo:-0}
+post_max_size = ${POST_MAX_SIZE:-128M}
+upload_max_filesize = ${UPLOAD_MAX_FILESIZE:-128M}
+memory_limit = ${MEMORY_LIMIT:-1028M}
+expose_php = ${EXPOSE_PHP:-off}
+cgi.fix_pathinfo = ${CGIFIX_PATHINFO:-0}
 EOF
 fi
 

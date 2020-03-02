@@ -23,7 +23,7 @@ ENV PHAB_DIFFUSION_SSH_USER=${PHAB_DIFFUSION_SSH_USER:-git}
 RUN apk update \
 	&& apk add --no-cache bash openssh-server openssh-keygen git \
 	git-daemon subversion freetype libpng libjpeg-turbo libzip \
-	py-pygments sudo sed procps zlib \
+	py-pygments sudo sed procps zlib imagemagick \
 	&& apk add --no-cache --virtual .build-deps \
 	$PHPIZE_DEPS freetype-dev libpng-dev libjpeg-turbo-dev libzip-dev \
 	&& docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg \
