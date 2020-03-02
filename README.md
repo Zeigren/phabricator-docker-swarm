@@ -2,6 +2,7 @@
 [![](https://images.microbadger.com/badges/image/zeigren/phabricator.svg)](https://microbadger.com/images/zeigren/phabricator)
 [![](https://images.microbadger.com/badges/version/zeigren/phabricator.svg)](https://microbadger.com/images/zeigren/phabricator)
 [![](https://images.microbadger.com/badges/commit/zeigren/phabricator.svg)](https://microbadger.com/images/zeigren/phabricator)
+![Docker Pulls](https://img.shields.io/docker/pulls/zeigren/phabricator)
 
 ## Docker Stack For [Phabricator](https://www.phacility.com/phabricator/)
 
