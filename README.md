@@ -1,20 +1,22 @@
-[![Docker Hub](https://img.shields.io/docker/cloud/build/zeigren/phabricator)](https://hub.docker.com/repository/docker/zeigren/phabricator)
-[![](https://images.microbadger.com/badges/image/zeigren/phabricator.svg)](https://microbadger.com/images/zeigren/phabricator)
-[![](https://images.microbadger.com/badges/version/zeigren/phabricator.svg)](https://microbadger.com/images/zeigren/phabricator)
-[![](https://images.microbadger.com/badges/commit/zeigren/phabricator.svg)](https://microbadger.com/images/zeigren/phabricator)
-![Docker Pulls](https://img.shields.io/docker/pulls/zeigren/phabricator)
+# Docker Stack For [Phabricator](https://www.phacility.com/phabricator/)
 
-## Docker Stack For [Phabricator](https://www.phacility.com/phabricator/)
+![Docker Image Size (latest)](https://img.shields.io/docker/image-size/zeigren/phabricator/latest)
+![Docker Pulls](https://img.shields.io/docker/pulls/zeigren/phabricator)
 
 ## Tags
 
-Tag labels are based on the container image version.
+- latest
+- 1.0.2
+- 1.0.1
+- 1.0.0
+
+Tag labels are based on the container image version
 
 ## Stack
 
 - PHP 7.4-fpm-alpine - Phabricator Stable Branch
 - Nginx Alpine
-- MariaDB 10.4/latest
+- MariaDB
 
 ## Links
 
@@ -22,41 +24,39 @@ Tag labels are based on the container image version.
 
 ### [GitHub](https://github.com/Zeigren/phabricator-docker-swarm)
 
-### [Main Repository](https://projects.zeigren.com/diffusion/40/)
+### [Main Repository](https://phabricator.kairohm.dev/diffusion/40/)
 
-### [Project](https://projects.zeigren.com/project/view/45/)
+### [Project](https://phabricator.kairohm.dev/project/view/45/)
+
+## Usage
+
+Use [Docker Compose](https://docs.docker.com/compose/) or [Docker Swarm](https://docs.docker.com/engine/swarm/) to deploy. There are examples for using NGINX or Traefik for SSL termination, or don't use SSL at all.
 
 ## Configuration
 
-This is designed to be run under [Docker Swarm](https://docs.docker.com/engine/swarm/) mode, don't know why you can't use secrets with just compose but it is what it is.
+Configuration primarily consists of environment variables in the `.yml` and `.conf` files.
 
-I like using [Portainer](https://www.portainer.io/) since it makes all the swarm configuration and tinkering easier, but it's not necessary.
+- phabricator_nginx.conf = NGINX config file (needs to be modified if you're using NGINX for SSL termination or not using HTTPS at all)
+- Make whatever changes you need to the appropriate `.yml`. All environment variables for Phabricator can be found in `docker-entrypoint.sh`
+- phabricator_mailers.json = Configure your [email provider](https://secure.phabricator.com/book/phabricator/article/configuring_outbound_email/) if you're using one
 
-I personally use this with [Traefik](https://traefik.io/) as a reverse proxy, but also not necessary.
+On first start you'll need to add an [authentication provider](https://secure.phabricator.com/book/phabricator/article/configuring_accounts_and_registration/), otherwise you won't be able to login or create new users.
 
-You'll need to create these [Docker Secrets](https://docs.docker.com/engine/swarm/secrets/):
+### Using NGINX for SSL Termination
 
-- yourdomain.com.crt = The SSL certificate for your domain (you'll need to create/copy this)
-- yourdomain.com.key = The SSL key for your domain (you'll need to create/copy this)
-- dhparam.pem = Diffie-Hellman parameter (you'll need to create/copy this)
-- phabricatorsql_root_password = Root password for your SQL database
+- yourdomain.test.crt = The SSL certificate for your domain (you'll need to create/copy this)
+- yourdomain.test.key = The SSL key for your domain (you'll need to create/copy this)
 
-You'll also need to create these [Docker Configs](https://docs.docker.com/engine/swarm/configs/):
+### [Docker Swarm](https://docs.docker.com/engine/swarm/)
 
-- phabricator_vhost = The nginx vhost file for BookStack (template included, simply replace all instances of `yourdomain`)
-- phabricator_mariadb = Example provided no changes necessary
-- mailers.json = Configure your [email provider](https://secure.phabricator.com/book/phabricator/article/configuring_outbound_email/), template provided
-- git-sudo = Example provided no changes necessary
-- sshd_config.phabricator = Example provided no changes necessary
+I personally use this with [Traefik](https://traefik.io/) as a reverse proxy, I've included an example `traefik.yml` but it's not necessary.
 
-Make whatever changes you need to docker-stack.yml (replace all instances of `yourdomain`). See `docker-php-entrypoint.sh` for all Phabricator configuration options.
+You'll need to create the appropriate [Docker Secrets](https://docs.docker.com/engine/swarm/secrets/) and [Docker Configs](https://docs.docker.com/engine/swarm/configs/).
 
-Run with `docker stack deploy --compose-file docker-stack.yml phabricator`
+Run with `docker stack deploy --compose-file docker-swarm.yml phabricator`
 
-On first start you'll need to add an authentication provider, otherwise you won't be able to login or create new users.
+### [Docker Compose](https://docs.docker.com/compose/)
 
-## Volumes
+You'll need to create a `config` folder and put `phabricator_nginx.conf`,  `phabricator_mailers.json`, and `phabricator_mariadb.cnf` in it. If you're using NGINX for SSL also put your SSL certificate and SSL key in it.
 
-- **/var/www/html**: phabricator files and local config
-- **/etc/ssh**: holds sshd-config for diffusion and key files (if keys are not on a volume, the fingerprint of the server will be regenerated on each start)
-- **/var/repo**: storage for the git repositories
+Run with `docker-compose up -d`. View using `127.0.0.1:9080`.

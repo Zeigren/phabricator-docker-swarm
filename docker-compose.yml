@@ -1,0 +1,78 @@
+version: "3.7"
+# https://docs.docker.com/compose/compose-file/compose-file-v3/
+services:
+  nginx:
+    image: nginx:alpine
+    # https://hub.docker.com/_/nginx
+    volumes:
+      - phabricator:/var/www/html
+      - ./config/phabricator_nginx.conf:/etc/nginx/templates/nginx.conf.template
+      # UNCOMMENT IF USING NGINX FOR SSL TERMINATION
+      # - ./config/yourdomain.test.crt:/etc/nginx/certs/yourdomain.test.crt
+      # - ./config/yourdomain.test.key:/etc/nginx/certs/yourdomain.test.key
+    networks:
+      - phabricator
+    ports:
+      # CHANGE TO "80:80" IF USING NGINX FOR SSL TERMINATION
+      - 9080:80
+      # UNCOMMENT IF USING NGINX FOR SSL TERMINATION
+      # - 443:443
+    environment:
+      - NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx
+      # https://nginx.org/en/docs/ngx_core_module.html#worker_processes
+      - NGINX_WORKER_PROCESSES=auto
+      # https://nginx.org/en/docs/ngx_core_module.html#worker_rlimit_nofile
+      - NGINX_WORKER_RLIMIT_NOFILE=65535
+      # https://nginx.org/en/docs/ngx_core_module.html#worker_connections
+      - NGINX_WORKER_CONNECTIONS=65535
+      # https://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
+      - NGINX_CLIENT_MAX_BODY_SIZE=32m
+      # https://nginx.org/en/docs/http/ngx_http_core_module.html#client_body_timeout
+      - NGINX_CLIENT_BODY_TIMEOUT=90s
+      - NGINX_HOST=phabricator.yourdomain.test
+      # UNCOMMENT IF USING NGINX FOR SSL TERMINATION
+      # - NGINX_SSL_CERT=yourdomain.test.crt
+      # - NGINX_SSL_KEY=yourdomain.test.key
+
+  mariadb:
+    image: mariadb:latest
+    # https://hub.docker.com/_/mariadb
+    volumes:
+      - phabricator_sql:/var/lib/mysql
+      - ./config/phabricator_mariadb.cnf:/etc/mysql/conf.d/phabricator.cnf
+    environment:
+      - MYSQL_ROOT_PASSWORD=CHANGEME
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - phabricator_db
+
+  phabricator:
+    image: zeigren/phabricator:latest
+    # https://hub.docker.com/r/zeigren/phabricator
+    volumes:
+      - phabricator:/var/www/html
+      - phabricator_ssh_config:/etc/ssh
+      - phabricator_repo:/var/repo
+      # - ./config/phabricator_mailers.json:/usr/src/docker-phab/mailers.json
+    environment:
+      # set UPGRADE_ON_RESTART to true on first start up or to update Phabricator
+      - UPGRADE_ON_RESTART=true
+      - PHAB_PHABRICATOR_BASE_URI=https://phabricator.yourdomain.test
+      - PHAB_MYSQL_PASS=CHANGEME
+      # - PHAB_CLUSTER_MAILERS=true
+    networks:
+      - phabricator
+      - phabricator_db
+    ports:
+      # SSH Port
+      - 2530:2530
+
+volumes:
+  phabricator_sql:
+  phabricator:
+  phabricator_ssh_config:
+  phabricator_repo:
+
+networks:
+  phabricator:
+  phabricator_db:

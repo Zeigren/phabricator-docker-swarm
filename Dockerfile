@@ -15,10 +15,6 @@ LABEL org.label-schema.schema-version="1.0" \
     org.label-schema.vcs-url=$URL \
     org.label-schema.vcs-branch=$BRANCH \
     org.label-schema.vcs-ref=$COMMIT
-          
-ENV PHAB_PHD_USER=${PHAB_PHD_USER:-phduser}
-ENV PHAB_DIFFUSION_SSH_PORT=${PHAB_DIFFUSION_SSH_PORT:-2530}
-ENV PHAB_DIFFUSION_SSH_USER=${PHAB_DIFFUSION_SSH_USER:-git}
 
 RUN apk update \
 	&& apk add --no-cache bash openssh-server openssh-keygen git \
@@ -33,21 +29,19 @@ RUN apk update \
 	&& docker-php-ext-enable apcu \
 	&& apk del .build-deps \
 	&& mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini \
-	&& adduser -D ${PHAB_DIFFUSION_SSH_USER} \
-	&& passwd -u ${PHAB_DIFFUSION_SSH_USER} \
-	&& adduser -D ${PHAB_PHD_USER} \
+	&& adduser -D git \
+	&& passwd -u git \
+	&& adduser -D phduser \
 	&& ln -s /usr/local/bin/php /bin/php \
 	&& ln -s /usr/libexec/git-core/git-http-backend /usr/bin/git-http-backend \
 	&& mkdir -p /usr/src/docker-phab/ 
 
-COPY ./phabricator-ssh-hook.sh /usr/src/docker-phab/
-COPY env_secrets_expand.sh docker-php-entrypoint.sh  wait-for.sh /usr/local/bin/
+COPY env_secrets_expand.sh docker-entrypoint.sh  wait-for.sh /usr/local/bin/
 
-RUN chmod +x /usr/src/docker-phab/phabricator-ssh-hook.sh \
-    && chmod +x /usr/local/bin/env_secrets_expand.sh \
-    && chmod +x /usr/local/bin/docker-php-entrypoint.sh \
+RUN chmod +x /usr/local/bin/env_secrets_expand.sh \
+    && chmod +x /usr/local/bin/docker-entrypoint.sh \
 	&& chmod +x /usr/local/bin/wait-for.sh
 
-ENTRYPOINT ["/usr/local/bin/docker-php-entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 
 CMD ["php-fpm", "-F"]
