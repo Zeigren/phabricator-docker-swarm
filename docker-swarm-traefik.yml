@@ -39,7 +39,6 @@ services:
       - phabricator_sql:/var/lib/mysql
     environment:
       - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/phabricatorsql_root_password
-      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
     secrets:
       - phabricatorsql_root_password
     configs:

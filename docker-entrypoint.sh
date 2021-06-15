@@ -51,9 +51,8 @@ echo "creating other config files"
 
 # create sudo config
 cat > "/etc/sudoers.d/git-sudo" <<EOF
-git ALL=(phduser) SETENV: NOPASSWD: /bin/ls, /usr/bin/git, /usr/bin/git-upload-pack, /usr/bin/git-receive-pack, /usr/bin/svnserve
-www-data ALL=(phduser) SETENV: NOPASSWD: /bin/ls, /usr/bin/git-http-backend, /usr/bin/git
-
+git ALL=(phduser) SETENV: NOPASSWD: /usr/bin/git, /usr/bin/git-upload-pack, /usr/bin/git-receive-pack, /usr/bin/svnserve
+www-data ALL=(phduser) SETENV: NOPASSWD: /usr/bin/git, /usr/bin/git-http-backend
 EOF
 
 # create sshd config
@@ -63,7 +62,6 @@ AuthorizedKeysCommandUser git
 AllowUsers git
 
 HostKey /etc/ssh/ssh_host_rsa_key
-#HostKey /etc/ssh/ssh_host_dsa_key
 HostKey /etc/ssh/ssh_host_ecdsa_key
 HostKey /etc/ssh/ssh_host_ed25519_key
 
@@ -78,11 +76,10 @@ ChallengeResponseAuthentication no
 AuthorizedKeysFile none
 
 PidFile /var/run/sshd-phabricator.pid
-
 EOF
 
 # create ssh hook
-cat > "/usr/libexec/phabricator-ssh-hook.sh" <<EOF
+cat > "/usr/libexec/phabricator-ssh-hook.sh" <<'EOF'
 #!/bin/sh
 
 VCSUSER="git"
@@ -95,7 +92,6 @@ then
 fi
 
 exec "$ROOT/bin/ssh-auth" $@
-
 EOF
 
 # if nothing on the volume, do a full install by cloning repos
@@ -182,7 +178,7 @@ then
 fi
 
 # change owner of repo directory
-if [ "${REPO_USER}" != "${PHAB_PHD_USER}" ]; then
+if [ "${REPO_USER}" != "phduser" ]; then
   chown -R phduser /var/repo/
 fi
 
